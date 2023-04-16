@@ -46,13 +46,6 @@ Laravel Project
 				                                  'data-parsley-required'=>'', 'data-parsley-maxlength'=>'100']) }}
 				</div>
 			</div>
-			
-			<div class="row">
-				<div class="col-md-12">
-					{{-- Label for picture --}}
-					{{ Form::label('picture', 'Picture:') }}
-					{{Form::image('picture', null, ['class'=>'form-control'])}}
-				</div>
 
 			<div class="row">
 				<div class="col-md-6">

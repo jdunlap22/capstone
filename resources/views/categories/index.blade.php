@@ -56,13 +56,13 @@ Laravel Project
 									<a href="{{ route('categories.edit', $category->id) }}" class="btn btn-success btn-sm">Edit</a>
 								</div>
 								<div style='float:left;'></div>
-								@if (Item::where('category_id', $category->id)->count() == 0)
-									<form action="{{ route('categories.delete', $category->id) }}" method="POST">
-										@csrf
-										@method('DELETE')
-										<button type="submit" class="btn btn-sm btn-danger">Delete</button>
-									</form>
-									@endif
+								@if ($category->items()->count() == 0)
+    								<form action="{{ route('categories.destroy', $category->id) }}" method="POST">
+        								@csrf
+       									@method('DELETE')
+        							<button type="submit" class="btn btn-sm btn-danger">Delete</button>
+    								</form>
+								@endif
 							</td>
 						</tr>
 					@endforeach

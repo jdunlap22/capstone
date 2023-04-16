@@ -8,12 +8,21 @@ Edit Item
 Laravel Project
 @endsection
 
-@section('scripts')
-{!! Html::script('/bower_components/parsleyjs/dist/parsley.min.js') !!}
+@section('css')
+    {!! Html::style('/css/parsley.css') !!}
+    {!! Html::style('/summernote/summernote.css') !!}
+    <link rel="stylesheet" href="{{ asset('/summernote/summernote-bs4.css') }}">
 @endsection
 
-@section('css')
-{!! Html::style('/css/parsley.css') !!}
+@section('scripts')
+    {!! Html::script('/bower_components/parsleyjs/dist/parsley.min.js') !!}
+    {!! Html::script('/summernote/summernote.js') !!}
+    <script src="{{ asset('/summernote/summernote-bs4.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            $('.summernote').summernote();
+        });
+    </script>
 @endsection
 
 @section('content')
@@ -39,8 +48,8 @@ Laravel Project
 				</select>
 
 			    {{ Form::label('description', 'Description:', ['style'=>'margin-top:20px']) }}
-			    {{ Form::textarea('description', null, ['class'=>'form-control', 
-				                                 'data-parsley-required'=>'']) }}
+			    {{ Form::textarea('description', null, ['class'=>'form-control summernote', 
+                                    'data-parsley-required'=>'']) }}
 
 				{{ Form::label('price', 'Price:', ['style'=>'margin-top:20px']) }}
 			    {{ Form::text('price', null, ['class'=>'form-control', 'style'=>'', 

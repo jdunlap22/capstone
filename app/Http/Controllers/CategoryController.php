@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Models\Item;
 use Illuminate\Support\Facades\Session;
 
 class CategoryController extends Controller
@@ -60,7 +61,10 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        //
+        $category = Category::findOrFail($id);
+        $products = $category->items()->get();
+
+        return view('category.show', compact('category', 'products'));
     }
 
     /**
@@ -116,5 +120,11 @@ class CategoryController extends Controller
             Session::flash('error', 'The category cannot be deleted due to items within it.');
             return redirect()->route('categories.index');
         }
+
+        $category->delete();
+
+        Session::flash('success','The category has been deleted');
+
+        return redirect()->route('categories.index');
     }
 }

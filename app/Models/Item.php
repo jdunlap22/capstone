@@ -14,10 +14,10 @@ class Item extends Model
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
     protected $dates = ['deleted_at'];
-    protected $fillable = ['name', 'description', 'image', 'category_id'];
+    protected $fillable = ['title', 'description', 'image', 'category_id'];
 
     public function category() {
-        return $this->hasOne('\App\Category','id', 'category_id')->orderBy('name','ASC');
+        return $this->hasOne('\App\Models\Category','id', 'category_id')->orderBy('title','ASC');
     }
 
     //function to set image that will auto update the image field when a new image is added

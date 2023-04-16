@@ -18,7 +18,11 @@ use Illuminate\Support\Facades\Auth;
 Route::middleware(['auth'])->group(function () {
 Route::resource('items', '\App\Http\Controllers\ItemController');
 Route::resource('categories', '\App\Http\Controllers\CategoryController');
+Route::resource('products', '\App\Http\Controllers\ProductController');
 
+Route::get('/', 'PublicController@index')->name('public.index');
+Route::get('/category/{id}', 'PublicController@showCategory')->name('public.showCategory');
+Route::get('/products/{id}', 'PublicController@showProduct')->name('public.showProduct');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 });
 
