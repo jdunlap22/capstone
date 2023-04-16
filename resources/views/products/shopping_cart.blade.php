@@ -27,12 +27,15 @@ Laravel Project
         <tr>
           <td>{{ $item->title }}</td>
           <td>
-            <form action="{{ route('update_cart', $item->id) }}" method="POST">
-              @csrf
-              <div class="form-group">
-                <input type="number" name="quantity" value="{{ $item->quantity }}" min="1" max="{{ $item->max_quantity }}" class="form-control">
-              </div>
-              <button type="submit" class="btn btn-primary">Update</button>
+            <form action="{{ route('cart.update', $item->id) }}" method="POST">
+                {{ csrf_field() }}
+                {{ method_field('PUT') }}
+                <div class="input-group mb-3">
+                    <input type="number" name="quantity" value="{{ $item->quantity }}" min="1" class="form-control">
+                    <div class="input-group-append">
+                        <button class="btn btn-success" type="submit">Update</button>
+                    </div>
+                </div>
             </form>
           </td>
           <td>{{ $item->price }}</td>

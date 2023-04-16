@@ -21,8 +21,7 @@ class CartController extends Controller
     {
         $this->store($id);
         $product = Item::find($id);
-        $cartItem = Cart::where('item_id', $id)->get();
-        dd($cartItem);
+        $cartItem = Cart::where('item_id', $id)->first();
         $subtotal = $cartItem->items->price * $cartItem->quantity;
         return view('products.shopping_cart', compact('product', 'cartItem', 'subtotal'));
     }
@@ -37,6 +36,6 @@ class CartController extends Controller
 
         Session::flash('success','The item has been added');
 
-        return redirect()->route('cart.showCart');
+        return redirect()->route('cart.showCart', ['id' => $request]);
     }
 }
