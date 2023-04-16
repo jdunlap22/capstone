@@ -19,10 +19,11 @@ Route::middleware(['auth'])->group(function () {
 Route::resource('items', '\App\Http\Controllers\ItemController');
 Route::resource('categories', '\App\Http\Controllers\CategoryController');
 Route::resource('products', '\App\Http\Controllers\ProductController');
+Route::resource('public', '\App\Http\Controllers\PublicController');
 
-Route::get('/', 'PublicController@index')->name('public.index');
-Route::get('/category/{id}', 'PublicController@showCategory')->name('public.showCategory');
-Route::get('/products/{id}', 'PublicController@showProduct')->name('public.showProduct');
+Route::get('/', 'PublicController@index')->name('products.index');
+Route::get('/category/{id}', '\App\Http\Controllers\PublicController@showCategory')->name('products.showCategory');
+Route::get('/product/{id}', '\App\Http\Controllers\PublicController@showProduct')->name('products.showProduct');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 });
 
