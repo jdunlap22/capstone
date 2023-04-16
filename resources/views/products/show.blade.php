@@ -9,6 +9,7 @@ Laravel Project
 @endsection
 
 @section('content')
+
     <div class="row">
         <div class="col-md-6">
             <img src="{{ Storage::url('images/items/'.$product->picture) }}" alt="{{ $product->title }}" class="product-image" style="margin-left: 100px;">
@@ -20,6 +21,7 @@ Laravel Project
             <p>Quantity: {{ $product->quantity }}</p>
             <p>SKU: {{ $product->sku }}</p>
             <button class="btn btn-primary">Buy Now</button>
+            <td><a href="{{ route('cart.showCart', $product->id) }}" class="btn btn-primary">Add to Cart</a></td>
         </div>
     </div>
 @endsection

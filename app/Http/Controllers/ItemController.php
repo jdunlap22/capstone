@@ -66,19 +66,29 @@ class ItemController extends Controller
         $item->quantity = $request->quantity;
         $item->sku = $request->sku;
 
-        //save image
+        //saving image
         if ($request->hasFile('picture')) {
             $image = $request->file('picture');
-
+        
             $filename = time() . '.' . $image->getClientOriginalExtension();
             $location ='images/items/' . $filename;
-
+        
             $image = Image::make($image);
             Storage::disk('public')->put($location, (string) $image->encode());
             $item->picture = $filename;
-        }
+        
+            // resize thumbnail image
+            $image = Image::make(public_path('storage/' . $location));
+            $image->resize(200, null, function ($constraint) {
+                $constraint->aspectRatio();
+            })->save(public_path('storage/images/items/tn_' . $filename));
 
-        $item->save(); //saves to DB
+            // resize large image
+            $image = Image::make(public_path('storage/' . $location));
+            $image->resize(600, null, function ($constraint) {
+                $constraint->aspectRatio();
+            })->save(public_path('storage/images/items/lrg_' . $filename));
+        }
 
         Session::flash('success','The item has been added');
 
@@ -155,17 +165,6 @@ class ItemController extends Controller
 
             $item->picture = $filename;
         }
-
-        // sending to database
-        $item = new Item([
-            'title' => $request->title,
-            'category_id' => $request->category_id,
-            'description' => $request->description,
-            'price' => $request->price,
-            'quantity' => $request->quantity,
-            'sku' => $request->sku,
-            'picture' => $filename ?? null,
-        ]);
 
         $item->save(); //saves to DB
 
