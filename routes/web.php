@@ -19,6 +19,7 @@ Route::middleware(['auth'])->group(function () {
 Route::resource('items', '\App\Http\Controllers\ItemController');
 Route::resource('categories', '\App\Http\Controllers\CategoryController');
 Route::resource('products', '\App\Http\Controllers\ProductController');
+Route::resource('orders', '\App\Http\Controllers\OrderController');
 Route::resource('public', '\App\Http\Controllers\PublicController');
 
 Route::get('/', 'PublicController@index')->name('products.index');
@@ -29,6 +30,7 @@ Route::get('/cart/update/{id}', '\App\Http\Controllers\CartController@update')->
 Route::get('/cart/store/{id}', '\App\Http\Controllers\CartController@store')->name('cart.store');
 Route::post('/cart/checkOut', '\App\Http\Controllers\CartController@checkOut')->name('cart.checkOut');
 Route::get('/cart/thankyou/{id}', '\App\Http\Controllers\CartController@thankYou')->name('thankyou');
+Route::get('/orders', '\App\Http\Controllers\OrderController@show')->name('orders.show');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 });
 
