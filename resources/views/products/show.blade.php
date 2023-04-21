@@ -20,8 +20,7 @@ Laravel Project
             <p>Price: {{ $product->price }}</p>
             <p>Quantity: {{ $product->quantity }}</p>
             <p>SKU: {{ $product->sku }}</p>
-            <button class="btn btn-primary">Buy Now</button>
-            <td><a href="{{ route('cart.showCart', $product->id) }}" class="btn btn-primary">Add to Cart</a></td>
+            <td><a href="{{ route('cart.store', $product->id) }}" class="btn btn-primary">Add to Cart</a></td>
         </div>
     </div>
 @endsection

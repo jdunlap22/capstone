@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Item;
 use App\Models\Cart;
+use App\Models\Sold;
+use App\Models\Checkout;
 use Illuminate\Support\Facades\Session;
 
 class CartController extends Controller
@@ -18,13 +20,14 @@ class CartController extends Controller
         return view('products.shopping_cart', compact('categories', 'items'));
     }
 
-    public function showCart($id)
+    public function showCart()
     {
-        $this->store($id);
-        $product = Item::find($id);
-        $cartItem = Cart::where('item_id', $id)->first();
-        $subtotal = $cartItem->items->price * $cartItem->quantity;
-        return view('products.shopping_cart', compact('product', 'cartItem', 'subtotal'));
+        $cartItems = Cart::where('session_id', session()->getId())->where('ip_address', request()->ip())->get();
+        $subtotal = 0;
+        foreach($cartItems as $cartItem) {
+            $subtotal += $cartItem->item->price * $cartItem->quantity;
+        }
+        return view('products.shopping_cart', compact('cartItems', 'subtotal'));
     }
 
 
@@ -35,17 +38,23 @@ class CartController extends Controller
         $cart->session_id = session()->getId();
         $cart->ip_address = request()->ip();
         $cart->quantity = 1;
+        $cart-> save();
 
         Session::flash('success','The item has been added');
 
         return redirect()->route('cart.showCart', ['id' => $request]);
     }
 
-    public function update($request, $id) 
+    public function update(Request $request, $id) 
     {
+        
         $cart = Cart::findOrFail($id);
+        if ($request->input('quantity') <= $cart->item->quantity) {
         $cart->quantity = $request->input('quantity');
         $cart->save();
+        } else {
+            Session::flash('quantity exceeds item inventory');
+        }
 
         return redirect()->route('cart.showCart');
     }
@@ -55,6 +64,45 @@ class CartController extends Controller
         $cart = Cart::findOrFail($id);
         $cart->delete();
         return redirect()->route('cart.showCart');
+    }
+
+    public function checkOut(Request $request) {
+        $request->validate([
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'phone' => 'required',
+            'email' => 'required|email',
+        ]);
+
+        $checkout = new Checkout;
+        $checkout->first_name = $request->first_name;
+        $checkout->last_name = $request->last_name;
+        $checkout->phone = $request->phone;
+        $checkout->email = $request->email;
+        $checkout->session_id = session()->getId();
+        $checkout->ip_address = request()->ip();
+        $checkout->save();
+
+        $cartItems = Cart::where('session_id', session()->getId())->where('ip_address', request()->ip())->get();
+        foreach($cartItems as $cartItem){
+            $sold = new Sold;
+            $sold->item_id = $cartItem->item_id;
+            $sold->order_id = $checkout->id;
+            $sold->item_price = $cartItem->item->price;
+            $sold->quantity = $cartItem->quantity;
+            $checkout->save();
+            $cartItem->delete();
+        }
+    
+    
+    return redirect()->route('thankyou', ['id' => $checkout->id]);
+    }
+
+    public function thankYou($id) 
+    {
+        $subtotal = 
+        $checkout = Checkout::findOrFail($id);
+        return view ('products.thankyou', compact('checkout', 'subtotal'));
     }
 
     public function emptyCart() 
