@@ -67,6 +67,11 @@ class CartController extends Controller
     }
 
     public function checkOut(Request $request) {
+        
+        if (!session()->has('session_id')) {
+            return redirect()->route('products.index');
+        }
+
         $request->validate([
             'first_name' => 'required',
             'last_name' => 'required',
@@ -90,7 +95,7 @@ class CartController extends Controller
             $sold->order_id = $checkout->id;
             $sold->item_price = $cartItem->item->price;
             $sold->quantity = $cartItem->quantity;
-            $checkout->save();
+            $sold->save();
             $cartItem->delete();
         }
     
@@ -100,8 +105,14 @@ class CartController extends Controller
 
     public function thankYou($id) 
     {
-        $subtotal = 
+        $subtotal = 0;
         $checkout = Checkout::findOrFail($id);
+        $cartItems = Sold::where('order_id', $checkout->id)->get();
+        foreach($cartItems as $soldItem) {
+            $subtotal += $soldItem->item_price * $soldItem->quantity;
+        }
+
+        session()->forget('session_id');
         return view ('products.thankyou', compact('checkout', 'subtotal'));
     }
 
